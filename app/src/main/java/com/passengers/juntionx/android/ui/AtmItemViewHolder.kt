@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.passengers.juntionx.android.R
 import com.passengers.juntionx.android.network.model.AtmOutputData
 import com.passengers.juntionx.android.network.model.AtmWithDistance
+import com.passengers.juntionx.android.network.model.LoadLevel
 
 
 class AtmItemViewHolder(
@@ -58,6 +59,14 @@ class AtmItemViewHolder(
         } else {
             atmTitleView?.text = "Withdrawal"
             atmTypeImgView?.setImageResource(R.drawable.ic_atm_type_withdrawal)
+        }
+
+        when (atmOutputData.loadLevel) {
+            LoadLevel.EMPTY -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_0)
+            LoadLevel.LEVEL_1 -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_1)
+            LoadLevel.LEVEL_2 -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_2)
+            LoadLevel.LEVEL_3 -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_3)
+            LoadLevel.LEVEL_4 -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_4)
         }
         distanceView?.text = "${atmOutputData.distanceInMeters?.toInt()} meters"
         locationValueView?.text = "${atm.city}, ${atm.zipCD}, ${atm.address}"

@@ -12,11 +12,47 @@
         app:umanoPanelHeight="0dp"
         app:umanoFadeColor="#00000000">
 
-    <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <FrameLayout android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+        <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <LinearLayout
+                android:id="@+id/fab_container"
+                android:layout_width="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    app:fabSize="normal"
+                    android:id="@+id/fab_location"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ic_my_loc"
+                    android:layout_marginBottom="16dp"
+                    app:backgroundTint="#fff"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    app:fabSize="normal"
+                    android:id="@+id/fab_filter"
+                    android:src="@drawable/ic_filter"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:backgroundTint="#fff"
+                    android:layout_marginStart="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+    </FrameLayout>
 
 
     <include

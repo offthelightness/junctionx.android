@@ -3,8 +3,12 @@ package com.passengers.juntionx.android.ui
 import android.annotation.SuppressLint
 import android.content.res.Resources.NotFoundException
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.updateMargins
 import com.github.florent37.runtimepermission.rx.RxPermissions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -52,6 +56,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val DEFAULT_MAP_ZOOM = 14f
 
     lateinit var panel: SlidingUpPanelLayout
+    lateinit var fabContainer: ViewGroup
     lateinit var atmItemViewHolder: AtmItemViewHolder
 
     val userLocationSubject = BehaviorSubject.create<LatLng>()
@@ -89,7 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //                val searchBounds: Pair<LatLng, LatLng> = it.createSearchArea(SEARCH_ATM_RADIUS)
                     ATMApiProvider.get()
                         .getATMsv3(
-                            true,
+                            null,
                             northeast,
                             southwest,
                             pair.first.toSimpleString()
@@ -99,7 +104,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 } else {
                     ATMApiProvider.get()
                         .getATMsv3(
-                            true,
+                            null,
                             northeast,
                             southwest,
                             null
@@ -193,6 +198,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun onFindViews() {
         panel = findViewById(R.id.panel)
+        fabContainer = findViewById(R.id.fab_container)
         atmItemViewHolder = AtmItemViewHolder(findViewById(R.id.atm_item))
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
     }
@@ -202,7 +208,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         panel?.addPanelSlideListener(object : SlidingUpPanelLayout.PanelSlideListener {
             override fun onPanelSlide(panel: View?, slideOffset: Float) {
-
+                val margin = (slideOffset * TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    224.0f,
+                    resources.displayMetrics
+                )).toInt()
+                Timber.d("margin $margin")
+                val layoutParams = fabContainer.layoutParams as FrameLayout.LayoutParams
+                layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    layoutParams.topMargin,
+                    layoutParams.rightMargin,
+                    margin
+                )
+                fabContainer.layoutParams = layoutParams
             }
 
             override fun onPanelStateChanged(
