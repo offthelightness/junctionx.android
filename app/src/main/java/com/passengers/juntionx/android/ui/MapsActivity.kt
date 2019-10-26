@@ -1,7 +1,9 @@
 package com.passengers.juntionx.android.ui
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.content.res.Resources.NotFoundException
+import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -45,6 +47,8 @@ import kotlin.collections.HashMap
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private var userLocationMarker: Marker? = null
+    private var fabFilter: FloatingActionButton? = null
     private var selectedMarker: Marker? = null
     private lateinit var items: List<AtmOutputData>
     private lateinit var map: GoogleMap
@@ -83,12 +87,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Observable.combineLatest(
             FilterRepository.filterSubject.doOnNext {
+                if (it.isFilled) {
+                    fabFilter?.setImageResource(R.drawable.ic_filter_white)
+                    fabFilter?.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorAccent))
+                } else {
+                    fabFilter?.setImageResource(R.drawable.ic_filter)
+                    fabFilter?.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
+                }
                 markers.values.forEach {
                     it.remove()
                 }
                 markers.clear()
             },
-            userLocationSubject,
+            userLocationSubject.doOnNext {
+                if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
+                    userLocationMarker?.remove()
+                    userLocationMarker = map.addMarker(
+                        MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_area))
+                            .anchor(0.5f, 0.5f)
+                            .position(it)
+                    )
+                }
+            },
             mapBoundsSubject,
             Function3<Filter,LatLng, LatLngBounds, SearchData> {f,u,m ->
                 SearchData(f,u,m)
@@ -211,7 +232,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         atmItemViewHolder = AtmItemViewHolder(findViewById(R.id.atm_item))
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
-        findViewById<FloatingActionButton>(R.id.fab_filter).setOnClickListener {
+        fabFilter = findViewById<FloatingActionButton>(R.id.fab_filter)
+        fabFilter?.setOnClickListener {
             supportFragmentManager
                 .beginTransaction()
                 .add(R.id.filter_container, FilterFragment())

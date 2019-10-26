@@ -11,4 +11,6 @@ class Filter(
     val canDeposit: Boolean? = null,
     val huf: Boolean? = null,
     val eur: Boolean? = null
-)
+) {
+    val isFilled: Boolean = withPredict == true ||canDeposit == true ||huf == true ||eur == true 
+}
