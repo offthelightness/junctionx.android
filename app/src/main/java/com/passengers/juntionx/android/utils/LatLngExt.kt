@@ -19,3 +19,7 @@ fun LatLng.createSearchArea(radiusInMeters: Int): Pair<LatLng, LatLng> {
 
     return Pair(LatLng(n, e), LatLng(s, w))
 }
+
+fun LatLng.toSimpleString(): String {
+    return this.latitude.toString() + ", " + this.longitude.toString()
+}
