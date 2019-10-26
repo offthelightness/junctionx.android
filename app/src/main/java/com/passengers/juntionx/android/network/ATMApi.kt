@@ -18,6 +18,7 @@ interface ATMApi {
     fun getATMsv3(@Query("canDeposit") canDeposit: Boolean?,
                 @Query("ne") northEast: String,
                 @Query("sw") southWest: String,
-                @Query("location") location: String?
+                @Query("location") location: String?,
+                @Query("usePrediction") usePrediction: Boolean?
     ): Observable<AtmSearchResult>
 }

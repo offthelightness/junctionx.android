@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:background="#F4F4F4"
+              android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
+                                                     android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toobar"
+                android:background="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:paddingBottom="112dp"
+                          android:orientation="vertical"
+                          android:layout_height="wrap_content">
+
+                <TextView android:layout_width="match_parent"
+                          android:background="#F4F4F4"
+                          android:layout_marginStart="16dp"
+                          android:text="Smart support"
+                          android:gravity="center_vertical"
+                          android:layout_marginEnd="16dp"
+                          android:layout_height="40dp"/>
+
+                <View android:layout_width="match_parent"
+                      android:layout_height="1dp"
+                      android:background="#DBDBDB"/>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:background="#fff"
+                              android:layout_height="56dp">
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:src="@drawable/ic_prediction"
+                            android:layout_margin="16dp"
+                            android:layout_height="24dp"/>
+
+                    <TextView android:layout_width="0dp"
+                              android:layout_gravity="center_vertical"
+                              android:text="Don\'t use queue prediction"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
+
+                    <Switch
+                            android:id="@+id/prediction"
+                            android:layout_width="wrap_content"
+                            android:layout_margin="16dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <View android:layout_width="match_parent"
+                      android:layout_height="1dp"
+                      android:background="#DBDBDB"/>
+                <TextView android:layout_width="match_parent"
+                          android:background="#F4F4F4"
+                          android:layout_marginStart="16dp"
+                          android:text="Type"
+                          android:gravity="center_vertical"
+                          android:layout_marginEnd="16dp"
+                          android:layout_height="40dp"/>
+
+                <View android:layout_width="match_parent"
+                      android:layout_height="1dp"
+                      android:background="#DBDBDB"/>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:background="#fff"
+                              android:layout_height="56dp">
+                    <ImageView
+                            android:layout_width="24dp"
+                            android:src="@drawable/ic_can_deposit"
+                            android:layout_margin="16dp"
+                            android:layout_height="24dp"/>
+
+                    <TextView android:layout_width="0dp"
+                              android:layout_gravity="center_vertical"
+                              android:text="With deposit"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
+
+                    <Switch
+                            android:id="@+id/can_deposit"
+                            android:layout_width="wrap_content"
+                            android:layout_margin="16dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                      android:layout_height="1dp"
+                      android:background="#DBDBDB"/>
+                <TextView android:layout_width="match_parent"
+                          android:background="#F4F4F4"
+                          android:layout_marginStart="16dp"
+                          android:text="Type"
+                          android:gravity="center_vertical"
+                          android:layout_marginEnd="16dp"
+                          android:layout_height="40dp"/>
+
+                <View android:layout_width="match_parent"
+                      android:layout_height="1dp"
+                      android:background="#DBDBDB"/>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:background="#fff"
+                              android:layout_height="56dp">
+
+
+                    <TextView android:layout_width="0dp"
+                              android:layout_marginStart="16dp"
+                              android:layout_gravity="center_vertical"
+                              android:text="HUF"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
+
+                    <CheckBox
+                            android:id="@+id/huf"
+                            android:layout_width="wrap_content"
+                            android:layout_margin="16dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent"
+                              android:background="#fff"
+                              android:layout_height="56dp">
+
+
+                    <TextView android:layout_width="0dp"
+                              android:layout_gravity="center_vertical"
+                              android:text="EUR"
+                              android:layout_marginStart="16dp"
+                              android:layout_height="wrap_content"
+                              android:layout_weight="1"/>
+
+                    <CheckBox
+                            android:id="@+id/eur"
+                            android:layout_width="wrap_content"
+                            android:layout_margin="16dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                      android:layout_height="1dp"
+                      android:background="#DBDBDB"/>
+
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+        <Button
+                android:id="@+id/apply"
+                android:layout_gravity="bottom"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="APPLY"
+                android:layout_margin="16dp"/>
+    </FrameLayout>
+</LinearLayout>

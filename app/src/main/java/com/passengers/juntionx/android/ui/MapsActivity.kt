@@ -15,7 +15,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.passengers.juntionx.android.R
+import com.passengers.juntionx.android.filter.Filter
+import com.passengers.juntionx.android.filter.FilterRepository
 import com.passengers.juntionx.android.location.LocationRepository
 import com.passengers.juntionx.android.location.LocationRepositoryImpl
 import com.passengers.juntionx.android.network.ATMApiProvider
@@ -31,6 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Action
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
+import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
@@ -78,36 +82,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapReadySubject = BehaviorSubject.create()
 
         Observable.combineLatest(
+            FilterRepository.filterSubject.doOnNext {
+                markers.values.forEach {
+                    it.remove()
+                }
+                markers.clear()
+            },
             userLocationSubject,
             mapBoundsSubject,
-            BiFunction<LatLng, LatLngBounds, Pair<LatLng, LatLngBounds>> { userLocation, mapBounds ->
-                Pair(
-                    userLocation,
-                    mapBounds
-                )
+            Function3<Filter,LatLng, LatLngBounds, SearchData> {f,u,m ->
+                SearchData(f,u,m)
             }
         ).debounce(500, TimeUnit.MILLISECONDS)
-            .flatMap { pair ->
-                val northeast = pair.second.northeast.toSimpleString()
-                val southwest = pair.second.southwest.toSimpleString()
-                if (pair.first !== LocationRepositoryImpl.EMPTY_LATLNG) {
+            .flatMap { searchData ->
+                val northeast = searchData.mapBounds.northeast.toSimpleString()
+                val southwest = searchData.mapBounds.southwest.toSimpleString()
+                if (searchData.userLocation !== LocationRepositoryImpl.EMPTY_LATLNG) {
 //                val searchBounds: Pair<LatLng, LatLng> = it.createSearchArea(SEARCH_ATM_RADIUS)
                     ATMApiProvider.get()
                         .getATMsv3(
-                            null,
+                            searchData.filter.canDeposit,
                             northeast,
                             southwest,
-                            pair.first.toSimpleString()
+                            searchData.userLocation.toSimpleString(),
+                            searchData.filter.withPredict
                         )
                         .subscribeOn(Schedulers.io())
 
                 } else {
                     ATMApiProvider.get()
                         .getATMsv3(
-                            null,
+                            searchData.filter.canDeposit,
                             northeast,
                             southwest,
-                            null
+                            null,
+                            searchData.filter.withPredict
                         )
                         .subscribeOn(Schedulers.io())
                 }
@@ -201,6 +210,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fabContainer = findViewById(R.id.fab_container)
         atmItemViewHolder = AtmItemViewHolder(findViewById(R.id.atm_item))
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
+        findViewById<FloatingActionButton>(R.id.fab_filter).setOnClickListener {
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.filter_container, FilterFragment())
+                .addToBackStack("FilterFragment")
+                .commit()
+        }
     }
 
     private fun onBindView() {
@@ -291,3 +308,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return true
     }
 }
+
+
+class SearchData(
+    val filter: Filter,
+    val userLocation: LatLng,
+    val mapBounds: LatLngBounds
+)
