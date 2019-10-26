@@ -18,6 +18,7 @@ import com.passengers.juntionx.android.location.LocationRepositoryImpl
 import com.passengers.juntionx.android.network.ATMApiProvider
 import com.passengers.juntionx.android.network.model.GetAtmResponseWithDistance
 import com.passengers.juntionx.android.utils.createSearchArea
+import com.passengers.juntionx.android.utils.toSimpleString
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
@@ -34,6 +35,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapReadySubject: BehaviorSubject<Any>
 
+    private val NORTH_EAST_IX_DISRICT_BOUNDS  = "47.488235, 19.121869"
+    private val SOUTH_WEST_IX_DISRICT_BOUNDS  = "47.488235, 19.121869"
+    private val SEARCH_ATM_RADIUS = 500
+
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,27 +53,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapReadySubject = BehaviorSubject.create()
 
         locationRepository
+            // request location with permission
             .getUpdatesWithPermissionsRequest(rxPermission)
+            // if have permission move camera to user
             .doOnNext {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
+                    Timber.d("User location: %s", it.toSimpleString())
                     map.moveCamera(
                         CameraUpdateFactory.newCameraPosition(
                             CameraPosition.Builder()
                                 .target(it)
-                                .zoom(15.5f)
+                                .zoom(10f)
                                 .build()
                         )
                     )
                 }
             }
+            // if have permission get
             .flatMap {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
+                    val searchBounds: Pair<LatLng, LatLng> =it.createSearchArea(SEARCH_ATM_RADIUS)
                     ATMApiProvider.get()
-                        .getATMs(true, "47.488235, 19.121869", "47.439975, 19.053688")
+                        .getATMs(true, searchBounds.first.toSimpleString(),searchBounds.second.toSimpleString())
                         .subscribeOn(Schedulers.io())
+
                 } else {
                     ATMApiProvider.get()
-                        .getATMs(true, it.createSearchArea(500).first.toString(), it.createSearchArea(500).second.toString())
+                        .getATMs(false, NORTH_EAST_IX_DISRICT_BOUNDS, SOUTH_WEST_IX_DISRICT_BOUNDS)
                         .subscribeOn(Schedulers.io())
                 }
             }
