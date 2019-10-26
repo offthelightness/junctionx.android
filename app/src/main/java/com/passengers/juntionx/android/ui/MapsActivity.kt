@@ -9,13 +9,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
 import com.passengers.juntionx.android.R
 import com.passengers.juntionx.android.location.LocationRepository
 import com.passengers.juntionx.android.location.LocationRepositoryImpl
 import com.passengers.juntionx.android.network.ATMApiProvider
+import com.passengers.juntionx.android.network.model.AtmWithDistance
 import com.passengers.juntionx.android.network.model.GetAtmResponseWithDistance
 import com.passengers.juntionx.android.utils.createSearchArea
 import com.passengers.juntionx.android.utils.toSimpleString
@@ -28,6 +27,8 @@ import timber.log.Timber
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private var selectedMarker: Marker? = null
+    private lateinit var items: List<AtmWithDistance>
     private lateinit var map: GoogleMap
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var rxPermission: RxPermissions
@@ -35,8 +36,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapReadySubject: BehaviorSubject<Any>
 
-    private val NORTH_EAST_IX_DISRICT_BOUNDS  = "47.488235, 19.121869"
-    private val SOUTH_WEST_IX_DISRICT_BOUNDS  = "47.488235, 19.121869"
+    private val NORTH_EAST_IX_DISRICT_BOUNDS = "47.488235, 19.121869"
+    private val SOUTH_WEST_IX_DISRICT_BOUNDS = "47.488235, 19.121869"
     private val SEARCH_ATM_RADIUS = 750
     private val DEFAULT_MAP_ZOOM = 14f
 
@@ -73,9 +74,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             // if have permission get
             .flatMap {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
-                    val searchBounds: Pair<LatLng, LatLng> =it.createSearchArea(SEARCH_ATM_RADIUS)
+                    val searchBounds: Pair<LatLng, LatLng> = it.createSearchArea(SEARCH_ATM_RADIUS)
                     ATMApiProvider.get()
-                        .getATMs(false, searchBounds.first.toSimpleString(),searchBounds.second.toSimpleString())
+                        .getATMs(false, searchBounds.first.toSimpleString(), searchBounds.second.toSimpleString())
                         .subscribeOn(Schedulers.io())
 
                 } else {
@@ -91,9 +92,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             )
             .subscribe({
+                items = it.items
                 it.items.map {
                     map.addMarker(
                         com.google.android.gms.maps.model.MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
                             .position(LatLng(it.atm.geoX, it.atm.geoY))
                             .draggable(false)
                     )
@@ -118,12 +121,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         try {
             val success =
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            googleMap.setOnMarkerClickListener { onMarkerClick(it) }
             if (!success) {
                 Timber.e("Style parsing failed.")
             }
         } catch (e: NotFoundException) {
             Timber.e(e, "Can't find style. Error: ")
         }
+    }
 
+    fun onMarkerClick(marker: Marker): Boolean {
+        if (selectedMarker != null) {
+            selectedMarker?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
+        }
+        val atmWithDistance = items.find {
+            it.atm.geoX == marker.position.latitude
+                    && it.atm.geoY == marker.position.longitude
+        }
+        atmWithDistance?.let {
+            if (it.atm.canDeposit) {
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_can_deposit))
+            } else {
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_cant_deposit))
+            }
+        }
+        selectedMarker = marker
+
+//        marker.setIcon()
+//        if (marker == myMarker) {
+//            //handle click here
+//        }
+        return true
     }
 }
