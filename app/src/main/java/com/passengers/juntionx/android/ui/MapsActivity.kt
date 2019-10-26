@@ -37,7 +37,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val NORTH_EAST_IX_DISRICT_BOUNDS  = "47.488235, 19.121869"
     private val SOUTH_WEST_IX_DISRICT_BOUNDS  = "47.488235, 19.121869"
-    private val SEARCH_ATM_RADIUS = 500
+    private val SEARCH_ATM_RADIUS = 750
+    private val DEFAULT_MAP_ZOOM = 14f
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +64,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         CameraUpdateFactory.newCameraPosition(
                             CameraPosition.Builder()
                                 .target(it)
-                                .zoom(10f)
+                                .zoom(DEFAULT_MAP_ZOOM)
                                 .build()
                         )
                     )
@@ -74,7 +75,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
                     val searchBounds: Pair<LatLng, LatLng> =it.createSearchArea(SEARCH_ATM_RADIUS)
                     ATMApiProvider.get()
-                        .getATMs(true, searchBounds.first.toSimpleString(),searchBounds.second.toSimpleString())
+                        .getATMs(false, searchBounds.first.toSimpleString(),searchBounds.second.toSimpleString())
                         .subscribeOn(Schedulers.io())
 
                 } else {
