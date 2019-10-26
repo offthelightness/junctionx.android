@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/atm_info"
+        android:layout_width="match_parent"
+        android:background="#fff"
+        android:gravity="bottom"
+        android:layout_height="214dp">
+
+    <View
+            android:id="@+id/top_anchor_button"
+            android:layout_width="28dp"
+            android:layout_height="4dp"
+            android:layout_margin="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="#C1C0C7"/>
+
+    <ImageView
+            android:id="@+id/close"
+            android:layout_width="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_anchor_button"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_close"
+            android:layout_height="24dp"/>
+
+    <ImageView
+            app:layout_constraintTop_toBottomOf="@+id/top_anchor_button"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_atm_type_withdrawal"
+            android:id="@+id/atm_type_img"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+    <TextView
+            android:id="@+id/atm_title_const"
+            android:minWidth="24dp"
+            android:gravity="bottom"
+            app:layout_constraintStart_toEndOf="@+id/atm_type_img"
+            app:layout_constraintTop_toTopOf="@+id/atm_type_img"
+            android:layout_marginStart="16dp"
+            android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:text="ATM:"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/atm_title"
+            android:minWidth="24dp"
+            android:gravity="bottom"
+            app:layout_constraintStart_toEndOf="@+id/atm_title_const"
+            app:layout_constraintTop_toTopOf="@+id/atm_title_const"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:text="withdrawal"
+            android:layout_height="wrap_content"/>
+
+    <ImageView
+            android:id="@+id/load_level_img"
+            app:layout_constraintStart_toEndOf="@+id/atm_type_img"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_load_level_4"
+            app:layout_constraintTop_toBottomOf="@+id/atm_title_const"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <View
+            android:id="@+id/dot"
+            android:layout_width="2dp"
+            android:background="#C1C0C7"
+            app:layout_constraintStart_toEndOf="@+id/load_level_img"
+            app:layout_constraintTop_toTopOf="@+id/load_level_img"
+            app:layout_constraintBottom_toBottomOf="@+id/load_level_img"
+            android:layout_height="2dp"
+            android:layout_margin="8dp"/>
+
+    <TextView
+            android:id="@+id/distance"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toEndOf="@+id/dot"
+            app:layout_constraintTop_toTopOf="@id/load_level_img"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="120 meters"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    <View
+            android:id="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/atm_type_img"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C1C0C7"/>
+
+    <TextView
+            android:id="@+id/location_title"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"
+            android:text="Location:"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/location_value"
+            app:layout_constraintTop_toBottomOf="@+id/location_title"
+            app:layout_constraintStart_toStartOf="parent"
+            android:drawableStart="@drawable/ic_location_grey"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:text="R\u00C3\u00A4mistrasse 71, 8006 Z\u00C3\u00BCrich, Switzerland"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+
+    <Button
+            android:id="@+id/info_button"
+            app:layout_constraintTop_toBottomOf="@+id/location_value"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            app:layout_constraintEnd_toStartOf="@+id/get_direction_button"
+            android:layout_width="0dp"
+            android:text="ATM DETAILS"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:id="@+id/get_direction_button"
+            android:layout_marginTop="16dp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="GET DIRECTION"
+            app:layout_constraintTop_toBottomOf="@+id/location_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/info_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
