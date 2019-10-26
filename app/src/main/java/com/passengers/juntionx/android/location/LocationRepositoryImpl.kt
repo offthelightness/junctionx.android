@@ -12,8 +12,8 @@ import io.reactivex.SingleObserver
 import pl.charmas.android.reactivelocation2.ReactiveLocationProvider
 
 class LocationRepositoryImpl constructor(
-    val context: Context,
-    val locationProvider: ReactiveLocationProvider
+    private val context: Context,
+    private val locationProvider: ReactiveLocationProvider = ReactiveLocationProvider(context)
 ) : LocationRepository {
 
     companion object {

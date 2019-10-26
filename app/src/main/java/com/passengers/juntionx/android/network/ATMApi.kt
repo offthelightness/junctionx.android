@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface ATMApi {
 
     @GET("/atm/v2")
-    fun getATMs(@Query("canDeposit") boolean: Boolean?,
+    fun getATMs(@Query("canDeposit") canDeposit: Boolean?,
                 @Query("ne") northEast: String,
                 @Query("sw") southWest: String
     ): Observable<GetAtmResponseWithDistance>
