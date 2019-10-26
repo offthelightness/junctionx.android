@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:background="#fff"
         android:gravity="bottom"
-        android:layout_height="214dp">
+        android:layout_height="224dp">
 
     <View
             android:id="@+id/top_anchor_button"
