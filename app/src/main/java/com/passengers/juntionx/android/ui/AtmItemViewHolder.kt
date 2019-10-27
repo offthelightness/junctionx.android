@@ -14,6 +14,8 @@ import com.passengers.juntionx.android.network.model.AtmOutputData
 import com.passengers.juntionx.android.network.model.AtmWithDistance
 import com.passengers.juntionx.android.network.model.LoadLevel
 import com.passengers.juntionx.android.user.UserRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class AtmItemViewHolder(
@@ -93,7 +95,9 @@ class AtmItemViewHolder(
                         averageHistoricalWaitingTime = atmOutputData.averageHistoricalWaitingTime!!,
                         realtimeWaitingTime = atmOutputData.realtimeWaitingTime!!
                     )
-                ).onErrorComplete()
+                ).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorComplete()
                     .subscribe()
             }
         }

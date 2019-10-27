@@ -30,6 +30,7 @@ import com.passengers.juntionx.android.utils.toSimpleString
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
@@ -106,6 +107,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_area))
                             .anchor(0.5f, 0.5f)
+                            .zIndex(1.0f)
                             .position(it)
                     )
                 }
@@ -153,6 +155,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             MarkerOptions()
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
                                 .position(LatLng(it.atm.geoX, it.atm.geoY))
+                                .zIndex(2.0f)
                                 .draggable(false)
                         )
                     }
@@ -176,6 +179,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         locationRepository
             // request location with permission
             .getUpdatesWithPermissionsRequest(rxPermission)
+            .zipWith(mapReadySubject, BiFunction<LatLng, Any, LatLng> { loc, an ->  loc})
             // if have permission move camera to user
             .doOnNext {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
