@@ -49,6 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var userLocationMarker: Marker? = null
     private var fabFilter: FloatingActionButton? = null
+    private var fabLocation: FloatingActionButton? = null
     private var selectedMarker: Marker? = null
     private lateinit var items: List<AtmOutputData>
     private lateinit var map: GoogleMap
@@ -182,54 +183,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .firstOrError()
             .subscribe(Consumer {
                 Timber.d("User location: %s", it.toSimpleString())
-                map.moveCamera(
+                map.animateCamera(
                     CameraUpdateFactory.newCameraPosition(
                         CameraPosition.Builder()
                             .target(it)
                             .zoom(DEFAULT_MAP_ZOOM)
                             .build()
-                    )
+                    ), 1000, null
                 )
             })
-
-//            // if have permission get
-//            .flatMap {
-//                if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
-//                    val searchBounds: Pair<LatLng, LatLng> = it.createSearchArea(SEARCH_ATM_RADIUS)
-//                    ATMApiProvider.get()
-//                        .getATMsv3(
-//                            false,
-//                            searchBounds.first.toSimpleString(),
-//                            searchBounds.second.toSimpleString(),
-//                            it.toSimpleString()
-//                        )
-//                        .subscribeOn(Schedulers.io())
-//
-//                } else {
-//                    ATMApiProvider.get()
-//                        .getATMs(false, NORTH_EAST_IX_DISRICT_BOUNDS, SOUTH_WEST_IX_DISRICT_BOUNDS)
-//                        .subscribeOn(Schedulers.io())
-//                }
-//            }
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .zipWith(mapReadySubject,
-//                BiFunction<AtmSearchResult, Any, AtmSearchResult> { response, mapReady ->
-//                    response
-//                }
-//            )
-//            .subscribe({
-//                items = it.items
-//                it.items.map {
-//                    map.addMarker(
-//                        com.google.android.gms.maps.model.MarkerOptions()
-//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
-//                            .position(LatLng(it.atm.geoX, it.atm.geoY))
-//                            .draggable(false)
-//                    )
-//                }
-//            }, {
-//                Timber.e(it)
-//            })
     }
 
     private fun onFindViews() {
@@ -246,6 +208,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .addToBackStack("FilterFragment")
                 .commit()
         }
+        fabLocation = findViewById<FloatingActionButton>(R.id.fab_location)
+        fabLocation?.setOnClickListener {
+            toMyLocation()
+        }
+    }
+
+    fun toMyLocation() {
+        locationRepository
+            // request location with permission
+            .getUpdatesWithPermissionsRequest(rxPermission)
+            .filter { it !== LocationRepositoryImpl.EMPTY_LATLNG }
+            .firstOrError()
+            .subscribe(Consumer {
+                Timber.d("User location: %s", it.toSimpleString())
+                map.animateCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                        CameraPosition.Builder()
+                            .target(it)
+                            .zoom(DEFAULT_MAP_ZOOM)
+                            .build()
+                    ), 1000, null
+                )
+            })
     }
 
     private fun onBindView() {
