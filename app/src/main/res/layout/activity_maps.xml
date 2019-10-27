@@ -57,10 +57,21 @@
             </LinearLayout>
         </FrameLayout>
 
+        <FrameLayout android:layout_width="match_parent"
+                     android:orientation="vertical"
+                     android:layout_height="240dp">
+            <View android:layout_width="match_parent"
+                  android:background="@drawable/bg_shadow"
 
-        <include
-                android:id="@+id/atm_item"
-                layout="@layout/layout_atm_info"/>
+                  android:layout_height="32dp"/>
+            <include
+                    android:id="@+id/atm_item"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="224dp"
+                    layout="@layout/layout_atm_info"/>
+        </FrameLayout>
+
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
     <FrameLayout

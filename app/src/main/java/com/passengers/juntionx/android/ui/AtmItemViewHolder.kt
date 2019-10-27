@@ -8,12 +8,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.passengers.juntionx.android.R
+import com.passengers.juntionx.android.network.ATMApiProvider
+import com.passengers.juntionx.android.network.model.ATMIntent
 import com.passengers.juntionx.android.network.model.AtmOutputData
 import com.passengers.juntionx.android.network.model.AtmWithDistance
 import com.passengers.juntionx.android.network.model.LoadLevel
+import com.passengers.juntionx.android.user.UserRepository
 
 
 class AtmItemViewHolder(
+    val userRepository: UserRepository,
     val itemView: View
 ) {
 
@@ -70,15 +74,28 @@ class AtmItemViewHolder(
             LoadLevel.LEVEL_3 -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_3)
             LoadLevel.LEVEL_4 -> loadLevelImgView?.setImageResource(R.drawable.ic_load_level_4)
         }
-        distanceView?.text = "${atmOutputData.distanceInMeters?.toInt()} meters"
+        distanceView?.text = "${atmOutputData.realDistanceInMeters?.toInt()} meters"
         locationValueView?.text = "${atm.city}, ${atm.zipCD}, ${atm.address}"
 
         getDirectionButtonView?.setOnClickListener {
             itemView.context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr=${atm.geoX},${atm.geoY}"))
+                    Uri.parse("http://maps.google.com/maps?daddr=${atm.geoX},${atm.geoY}")
+                )
             )
+            if (atmOutputData.realDistanceInMeters != null) {
+                ATMApiProvider.get().postATMIntent(
+                    ATMIntent(
+                        userId = userRepository.getUserId(),
+                        atmId = atm.id,
+                        realDistanceToAtmInMeters = atmOutputData.realDistanceInMeters,
+                        averageHistoricalWaitingTime = atmOutputData.averageHistoricalWaitingTime!!,
+                        realtimeWaitingTime = atmOutputData.realtimeWaitingTime!!
+                    )
+                ).onErrorComplete()
+                    .subscribe()
+            }
         }
     }
 }

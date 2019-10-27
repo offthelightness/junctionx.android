@@ -25,6 +25,7 @@ import com.passengers.juntionx.android.location.LocationRepositoryImpl
 import com.passengers.juntionx.android.network.ATMApiProvider
 import com.passengers.juntionx.android.network.model.AtmOutputData
 import com.passengers.juntionx.android.network.model.AtmSearchResult
+import com.passengers.juntionx.android.user.UserRepository
 import com.passengers.juntionx.android.utils.toSimpleString
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import io.reactivex.Observable
@@ -93,8 +94,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 markers.values.forEach {
                     it.remove()
                 }
+                selectedMarker = null
                 markers.clear()
                 lastBestAtmId = null
+                panel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
             },
             userLocationSubject.doOnNext {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
@@ -112,7 +115,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 SearchData(f, u, m)
             }
         ).debounce(500, TimeUnit.MILLISECONDS)
-            .flatMap { searchData ->
+            .switchMap { searchData ->
                 val northeast = searchData.mapBounds.northeast.toSimpleString()
                 val southwest = searchData.mapBounds.southwest.toSimpleString()
                 if (searchData.userLocation !== LocationRepositoryImpl.EMPTY_LATLNG) {
@@ -199,10 +202,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun onFindViews() {
         panel = findViewById(R.id.panel)
         fabContainer = findViewById(R.id.fab_container)
-        atmItemViewHolder = AtmItemViewHolder(findViewById(R.id.atm_item))
+        atmItemViewHolder = AtmItemViewHolder(UserRepository(this), findViewById(R.id.atm_item))
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
-        fabFilter = findViewById<FloatingActionButton>(R.id.fab_filter)
+        fabFilter = findViewById(R.id.fab_filter)
         fabFilter?.setOnClickListener {
             supportFragmentManager
                 .beginTransaction()
@@ -262,8 +265,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 newState: SlidingUpPanelLayout.PanelState?
             ) {
                 if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    if (selectedMarker != null) {
+                    try {
+
                         selectedMarker?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
+                    } catch (e: Throwable) {
+                        Timber.e(e)
                     }
                 }
             }

@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
     </style>
 
     <style name="Otp.Switch" parent="Theme.AppCompat.Light">
@@ -35,5 +36,7 @@
         <item name="android:windowBackground">@drawable/bg_splash</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
+
+
 
 </resources>
