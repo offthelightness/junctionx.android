@@ -99,7 +99,7 @@
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/atm_type_img"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:background="#C1C0C7"/>
 
     <TextView
