@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.updateMargins
 import com.github.florent37.runtimepermission.rx.RxPermissions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -26,21 +25,15 @@ import com.passengers.juntionx.android.location.LocationRepositoryImpl
 import com.passengers.juntionx.android.network.ATMApiProvider
 import com.passengers.juntionx.android.network.model.AtmOutputData
 import com.passengers.juntionx.android.network.model.AtmSearchResult
-import com.passengers.juntionx.android.network.model.AtmWithDistance
-import com.passengers.juntionx.android.network.model.GetAtmResponseWithDistance
-import com.passengers.juntionx.android.utils.createSearchArea
 import com.passengers.juntionx.android.utils.toSimpleString
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Action
-import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
@@ -73,6 +66,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     val markers = HashMap<String, Marker>()
 
+    var lastBestAtmId :String? = null
+
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     it.remove()
                 }
                 markers.clear()
+                lastBestAtmId = null
             },
             userLocationSubject.doOnNext {
                 if (it !== LocationRepositoryImpl.EMPTY_LATLNG) {
@@ -127,7 +123,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             northeast,
                             southwest,
                             searchData.userLocation.toSimpleString(),
-                            searchData.filter.withPredict
+                            searchData.filter.dontProposeBestAtm != true
                         )
                         .subscribeOn(Schedulers.io())
 
@@ -138,7 +134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             northeast,
                             southwest,
                             null,
-                            searchData.filter.withPredict
+                            searchData.filter.dontProposeBestAtm != true
                         )
                         .subscribeOn(Schedulers.io())
                 }
@@ -158,10 +154,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
                     }
                 }
-                atmSearchResult.bestAtm?.let {
-                    val marker = markers[it.atm.id]
-                    if (marker != null) {
-                        onMarkerClick(marker)
+                if (FilterRepository.filterSubject.value?.dontProposeBestAtm != true) {
+                    atmSearchResult.bestAtm?.let {
+                        if (it.atm.id != lastBestAtmId) {
+                            val marker = markers[it.atm.id]
+                            if (marker != null) {
+                                onMarkerClick(marker)
+                            }
+                            lastBestAtmId = it.atm.id
+                        }
+
                     }
                 }
             }, {

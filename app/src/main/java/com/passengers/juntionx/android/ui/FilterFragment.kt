@@ -44,7 +44,7 @@ class FilterFragment : Fragment() {
             false
         }
 
-        withPredictionSwitch.isChecked = filter?.withPredict == true
+        withPredictionSwitch.isChecked = filter?.dontProposeBestAtm == true
         canDepositSwitch.isChecked = filter?.canDeposit == true
         hufCheckBox.isChecked = filter?.huf == true
         eurCheckBox.isChecked = filter?.eur == true

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:background="#F4F4F4"
@@ -53,12 +54,14 @@
 
                     <TextView android:layout_width="0dp"
                               android:layout_gravity="center_vertical"
-                              android:text="Don\'t use queue prediction"
+                              android:text="Don\'t propose best ATM"
                               android:layout_height="wrap_content"
                               android:layout_weight="1"/>
 
                     <Switch
                             android:id="@+id/prediction"
+                            android:theme="@style/Otp.Switch"
+                            tools:checked="true"
                             android:layout_width="wrap_content"
                             android:layout_margin="16dp"
                             android:layout_gravity="center_vertical"
@@ -99,6 +102,7 @@
                     <Switch
                             android:id="@+id/can_deposit"
                             android:layout_width="wrap_content"
+                            android:theme="@style/Otp.Switch"
                             android:layout_margin="16dp"
                             android:layout_gravity="center_vertical"
                             android:layout_height="wrap_content"/>
@@ -135,6 +139,8 @@
                             android:id="@+id/huf"
                             android:layout_width="wrap_content"
                             android:layout_margin="16dp"
+                            tools:checked="true"
+                            android:buttonTint="@color/colorPrimary"
                             android:layout_gravity="center_vertical"
                             android:layout_height="wrap_content"/>
 
@@ -153,6 +159,7 @@
 
                     <CheckBox
                             android:id="@+id/eur"
+                            android:buttonTint="@color/colorPrimary"
                             android:layout_width="wrap_content"
                             android:layout_margin="16dp"
                             android:layout_gravity="center_vertical"
@@ -172,6 +179,7 @@
                 android:id="@+id/apply"
                 android:layout_gravity="bottom"
                 style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/Otp.Button"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="APPLY"

@@ -7,10 +7,10 @@ object FilterRepository {
 }
 
 class Filter(
-    val withPredict: Boolean? = null,
+    val dontProposeBestAtm: Boolean? = null,
     val canDeposit: Boolean? = null,
     val huf: Boolean? = null,
     val eur: Boolean? = null
 ) {
-    val isFilled: Boolean = withPredict == true ||canDeposit == true ||huf == true ||eur == true 
+    val isFilled: Boolean = dontProposeBestAtm == true ||canDeposit == true ||huf == true ||eur == true
 }
