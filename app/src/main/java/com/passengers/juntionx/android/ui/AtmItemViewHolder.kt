@@ -1,5 +1,7 @@
 package com.passengers.juntionx.android.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -70,5 +72,13 @@ class AtmItemViewHolder(
         }
         distanceView?.text = "${atmOutputData.distanceInMeters?.toInt()} meters"
         locationValueView?.text = "${atm.city}, ${atm.zipCD}, ${atm.address}"
+
+        getDirectionButtonView?.setOnClickListener {
+            itemView.context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr=${atm.geoX},${atm.geoY}"))
+            )
+        }
     }
 }

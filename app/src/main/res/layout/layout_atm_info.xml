@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/atm_info"
         android:layout_width="match_parent"
-        android:background="#fff"
+        android:background="@drawable/bg_card"
         android:gravity="bottom"
         android:layout_height="224dp">
 
@@ -17,7 +17,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="#C1C0C7"/>
+            android:background="@drawable/bg_rectangle_grey"/>
 
     <ImageView
             android:id="@+id/close"
@@ -74,7 +74,7 @@
     <View
             android:id="@+id/dot"
             android:layout_width="2dp"
-            android:background="#C1C0C7"
+            android:background="@drawable/bg_rectangle_grey"
             app:layout_constraintStart_toEndOf="@+id/load_level_img"
             app:layout_constraintTop_toTopOf="@+id/load_level_img"
             app:layout_constraintBottom_toBottomOf="@+id/load_level_img"

@@ -111,8 +111,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             },
             mapBoundsSubject,
-            Function3<Filter,LatLng, LatLngBounds, SearchData> {f,u,m ->
-                SearchData(f,u,m)
+            Function3<Filter, LatLng, LatLngBounds, SearchData> { f, u, m ->
+                SearchData(f, u, m)
             }
         ).debounce(500, TimeUnit.MILLISECONDS)
             .flatMap { searchData ->
@@ -155,6 +155,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                 .position(LatLng(it.atm.geoX, it.atm.geoY))
                                 .draggable(false)
                         )
+                    }
+                }
+                atmSearchResult.bestAtm?.let {
+                    val marker = markers[it.atm.id]
+                    if (marker != null) {
+                        onMarkerClick(marker)
                     }
                 }
             }, {
@@ -305,6 +311,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun onMarkerClick(marker: Marker): Boolean {
+        if (selectedMarker == userLocationMarker) {
+            return true
+        }
         if (selectedMarker != null) {
             selectedMarker?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin))
         }
