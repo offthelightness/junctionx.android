@@ -23,7 +23,7 @@ class ATMApiProvider {
             .build()
 
         fun get(): ATMApi = Retrofit.Builder()
-            .baseUrl("http://100.98.11.218:8080")
+            .baseUrl("http://localhost:8080")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
